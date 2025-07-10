@@ -1,5 +1,6 @@
 package telran.java58.forum.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode(of = {"user","dateCreated"})
 public class Comment {
     @Setter
     private String user;

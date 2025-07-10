@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Getter
@@ -26,7 +27,7 @@ public class Post {
     private String author;
     private LocalDateTime dateCreated = LocalDateTime.now();
     @Setter
-    private Set<String> tags;
+    private Set<String> tags = new HashSet<>();
     private int likes;
     private List<Comment> comments = new ArrayList<>();
 
@@ -45,7 +46,11 @@ public class Post {
         this.likes++;
     }
 
-    public void addTags(Set<String> tags) {
-        this.tags.addAll(tags);
+    public boolean addTags(Set<String> tags) {
+       return this.tags.addAll(tags);
     }
+    public boolean removeTags(Set<String> tags) {
+        return this.tags.remove(tags);
+    }
+
 }

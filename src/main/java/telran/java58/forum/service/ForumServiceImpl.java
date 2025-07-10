@@ -2,10 +2,8 @@ package telran.java58.forum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import telran.java58.forum.dao.ForumRepository;
-import telran.java58.forum.dto.CommentDto;
 import telran.java58.forum.dto.PostAddUpdateDto;
 import telran.java58.forum.dto.PostDto;
 import telran.java58.forum.dto.exceptions.NotFoundException;
@@ -13,7 +11,6 @@ import telran.java58.forum.model.Comment;
 import telran.java58.forum.model.Post;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
