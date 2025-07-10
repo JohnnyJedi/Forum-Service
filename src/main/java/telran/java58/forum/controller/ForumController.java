@@ -3,6 +3,7 @@ package telran.java58.forum.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import telran.java58.forum.dto.CommentRequestDto;
 import telran.java58.forum.dto.PostAddUpdateDto;
 import telran.java58.forum.dto.PostDto;
 import telran.java58.forum.service.ForumService;
@@ -18,6 +19,7 @@ public class ForumController {
     private final ForumService forumService;
 
     @PostMapping("/forum/post/{user}")
+    @ResponseStatus(HttpStatus.CREATED)
     public PostDto addPost(@PathVariable("user") String author, @RequestBody PostAddUpdateDto post) {
         return forumService.addPost(author, post);
     }
@@ -39,8 +41,8 @@ public class ForumController {
     }
 
     @PatchMapping("/forum/post/{postId}/comment/{commenter}")
-    public PostDto addComment(@PathVariable("postId") String id, @PathVariable String commenter, @RequestBody String message) {
-        return forumService.addComment(id, commenter, message);
+    public PostDto addComment(@PathVariable("postId") String id, @PathVariable String commenter, @RequestBody CommentRequestDto comment) {
+        return forumService.addComment(id, commenter, comment.getMessage());
     }
 
     @DeleteMapping("/forum/post/{postId}")
@@ -49,7 +51,7 @@ public class ForumController {
     }
 
     @GetMapping("/forum/posts/tags")
-    public List<PostDto> findPostsByTags(@RequestParam("tags") Set<String> tags) {
+    public List<PostDto> findPostsByTags(@RequestParam("values") Set<String> tags) {
         return forumService.findPostsByTags(tags);
     }
 

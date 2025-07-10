@@ -69,18 +69,30 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public List<PostDto> findPostsByTags(Set<String> tags) {
-        return repository.findByTagsIn(tags).stream()
-                .map(post -> modelMapper.map(post,PostDto.class))
+        return repository.findByTagsInIgnoreCase(tags).stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
                 .toList();
     }
 
     @Override
     public List<PostDto> findPostsByPeriod(LocalDate dateFrom, LocalDate dateTo) {
-        return List.of();
+        List<Post> posts = repository.findByDateCreatedBetween(dateFrom.atStartOfDay(), dateTo.atStartOfDay());
+        return posts.stream().map(post -> modelMapper.map(post, PostDto.class)).toList();
     }
 
     @Override
-    public PostDto updatePost(String id, PostAddUpdateDto post) {
-        return null;
+    public PostDto updatePost(String id, PostAddUpdateDto postAddUpdateDto) {
+        Post post = repository.findById(id).orElseThrow(NotFoundException::new);
+        if (postAddUpdateDto.getTitle() != null) {
+            post.setTitle(postAddUpdateDto.getTitle());
+        }
+        if (postAddUpdateDto.getContent() != null) {
+            post.setContent(postAddUpdateDto.getContent());
+        }
+        if (!postAddUpdateDto.getTags().isEmpty()) {
+            post.addTags(postAddUpdateDto.getTags());
+        }
+        repository.save(post);
+        return modelMapper.map(post, PostDto.class);
     }
 }

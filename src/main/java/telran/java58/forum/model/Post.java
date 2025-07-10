@@ -44,4 +44,8 @@ public class Post {
     public void addLike() {
         this.likes++;
     }
+
+    public void addTags(Set<String> tags) {
+        this.tags.addAll(tags);
+    }
 }
