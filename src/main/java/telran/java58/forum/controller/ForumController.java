@@ -49,8 +49,8 @@ public class ForumController {
     }
 
     @GetMapping("/forum/posts/tags")
-    public List<PostDto> findPostsByTags(@RequestParam Set<String> values) {
-        return forumService.findPostsByTags(values);
+    public List<PostDto> findPostsByTags(@RequestParam("tags") Set<String> tags) {
+        return forumService.findPostsByTags(tags);
     }
 
     @GetMapping("/forum/posts/period")
