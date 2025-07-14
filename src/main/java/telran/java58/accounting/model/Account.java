@@ -1,9 +1,6 @@
 package telran.java58.accounting.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import telran.java58.accounting.Roles;
@@ -15,6 +12,7 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"login"})
+@Builder
 public class Account {
     @Setter
     @Id
@@ -25,6 +23,7 @@ public class Account {
     private String lastName;
     @Setter
     private String password;
+    @Singular
     private Set<Roles> roles = new HashSet<>();
 
     public Account(String login, String firstName, String lastName, String password, Set<Roles> roles) {

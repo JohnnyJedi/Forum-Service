@@ -8,6 +8,8 @@ import telran.java58.accounting.Roles;
 import telran.java58.accounting.dto.*;
 import telran.java58.accounting.service.AccountingService;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
@@ -21,8 +23,8 @@ public class AccountingController {
     }
 
     @PostMapping("/login")
-    public UserDto loginUser(@RequestBody AuthDto authDto) {
-        return accountingService.loginUser(authDto);
+    public UserDto loginUser(Principal principal) {
+        return accountingService.getUserByLogin(principal.getName());
     }
 
     @DeleteMapping("/user/{user}")
@@ -47,9 +49,8 @@ public class AccountingController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/password")
-    public void changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
-        accountingService.changePassword(changePasswordDto);
-    }
+    public void changePassword(Principal principal,@RequestHeader("X-Password") String newPassword) {
+        accountingService.changePassword(principal.getName(), newPassword);    }
 
     @GetMapping("/user/{user}")
     public UserDto getUserByLogin(@PathVariable("user") String username) {

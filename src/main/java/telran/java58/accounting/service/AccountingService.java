@@ -18,7 +18,7 @@ public interface AccountingService {
 
     UserUpdateRoleDto deleteRole( String username, String role);
 
-    void changePassword(ChangePasswordDto changePasswordDto);
-
     UserDto getUserByLogin( String username);
+
+    void changePassword(String name, String newPassword);
 }
