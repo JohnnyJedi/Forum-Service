@@ -5,27 +5,31 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import telran.java58.accounting.Roles;
-import telran.java58.accounting.dao.UserAccountRepository;
-import telran.java58.accounting.model.UserAccount;
+import telran.java58.forum.dao.ForumRepository;
+import telran.java58.forum.model.Post;
 import telran.java58.security.model.User;
 
 import java.io.IOException;
 
 @Component
-@Order(20)
+@Order(50)
 @RequiredArgsConstructor
-public class AdminManagingRolesFilter implements Filter {
+public class DeletePostFilter implements Filter {
+    private final ForumRepository forumRepository;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        if (checkEndPoint(request.getMethod(), request.getServletPath())) {
-            System.out.println("AdminManaging principal = " + request.getUserPrincipal());
-            User user = (User)request.getUserPrincipal();
-            if (!user.getRoles().contains(Roles.ADMINISTRATOR.name())) {
+        if (checkEndPoints(request.getMethod(), request.getServletPath())) {
+            User user = (User) request.getUserPrincipal();
+            String[] parts = request.getServletPath().split("/");
+            String postId = parts[parts.length - 1];
+            Post post = forumRepository.findById(postId).orElse(null);
+            if (post == null || !(user.getName().equalsIgnoreCase(post.getAuthor()))) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
@@ -33,7 +37,9 @@ public class AdminManagingRolesFilter implements Filter {
         filterChain.doFilter(request, response);
     }
 
-    private boolean checkEndPoint(String method, String servletPath) {
-        return servletPath.matches("/account/user/\\w+/role/\\w+");
+
+    private boolean checkEndPoints(String method, String servletPath) {
+        return (servletPath.matches("/forum/post/\\w+") && HttpMethod.DELETE.matches(method));
     }
+
 }

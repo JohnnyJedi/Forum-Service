@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import telran.java58.accounting.Roles;
 import telran.java58.accounting.dao.UserAccountRepository;
 import telran.java58.accounting.model.UserAccount;
+import telran.java58.security.model.User;
 
 import java.io.IOException;
 
@@ -17,27 +18,24 @@ import java.io.IOException;
 @Order(30)
 @RequiredArgsConstructor
 public class UpdateDeleteUserFilter implements Filter {
-    private final UserAccountRepository accountRepository;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        if (!request.getServletPath().matches("/account/user/\\w+")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        String userForUpdate = request.getServletPath().split("/")[3];
-        String login = request.getUserPrincipal().getName();
         if (isUpdate(request.getMethod(), request.getServletPath())) {
-            if (!userForUpdate.equalsIgnoreCase(login)) {
+            String userForUpdate = request.getServletPath().split("/")[3];
+            User user = (User) request.getUserPrincipal();
+            if (!userForUpdate.equalsIgnoreCase(user.getName())) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
         }
         if (isDelete(request.getMethod(), request.getServletPath())) {
-            UserAccount user = accountRepository.findById(login).orElseThrow();
-            if (!userForUpdate.equalsIgnoreCase(login) && !user.getRoles().contains(Roles.ADMINISTRATOR)) {
+            String userForUpdate = request.getServletPath().split("/")[3];
+            String login = request.getUserPrincipal().getName();
+            User user = (User) request.getUserPrincipal();
+            if (!userForUpdate.equalsIgnoreCase(login) && !user.getRoles().contains(Roles.ADMINISTRATOR.name())) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
@@ -47,7 +45,12 @@ public class UpdateDeleteUserFilter implements Filter {
 
 
     private boolean isUpdate(String method, String servletPath) {
-        return servletPath.matches("/account/user/\\w+") && HttpMethod.PATCH.matches(method);
+        return (
+                servletPath.matches("/account/user/\\w+") && HttpMethod.PATCH.matches(method) ||
+                        servletPath.matches("/forum/post/\\w+") && HttpMethod.POST.matches(method) ||
+                        servletPath.matches("/forum/post/\\w+/comment/\\w+") && HttpMethod.PATCH.matches(method)
+
+        );
     }
 
     private boolean isDelete(String method, String servletPath) {

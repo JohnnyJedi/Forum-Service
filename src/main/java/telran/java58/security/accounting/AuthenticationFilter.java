@@ -9,12 +9,16 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import telran.java58.accounting.Roles;
 import telran.java58.accounting.dao.UserAccountRepository;
 import telran.java58.accounting.model.UserAccount;
+import telran.java58.security.model.User;
 
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Base64;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -26,14 +30,17 @@ public class AuthenticationFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        if (checkEndPoint(request.getMethod(),request.getServletPath())) {
+        if (checkEndPoint(request.getMethod(), request.getServletPath())) {
             try {
                 String[] credentials = getCredentials(request.getHeader("Authorization"));
                 UserAccount account = accountRepository.findById(credentials[0]).orElseThrow(RuntimeException::new);
                 if (!BCrypt.checkpw(credentials[1], account.getPassword())) {
                     throw new RuntimeException();
                 }
-                request = new WrappedRequest(request, account.getLogin());
+                Set<String>roles = account.getRoles().stream()
+                        .map(Roles::name)
+                        .collect(Collectors.toSet());
+                request = new WrappedRequest(request, account.getLogin(),roles);
                 System.out.println("Auth principal = " + request.getUserPrincipal());
 
 
@@ -53,8 +60,8 @@ public class AuthenticationFilter implements Filter {
     }
 
     private boolean checkEndPoint(String method, String servletPath) {
-        return !(HttpMethod.POST.matches(method) && servletPath.matches("/account/register")) &&
-                !(HttpMethod.GET.matches(method) && servletPath.matches("/forum/posts")) ;
+        return !((HttpMethod.POST.matches(method) && servletPath.matches("/account/register"))
+                ||(HttpMethod.GET.matches(method) && servletPath.matches("/forum/posts.+")));
     }
 
 
@@ -65,17 +72,19 @@ public class AuthenticationFilter implements Filter {
     }
 
 
-
-    private static class WrappedRequest extends HttpServletRequestWrapper{
+    private static class WrappedRequest extends HttpServletRequestWrapper {
         private final String login;
+        private final Set<String> roles;
 
-        public WrappedRequest(HttpServletRequest request, String login) {
+        public WrappedRequest(HttpServletRequest request, String login, Set<String> roles) {
             super(request);
             this.login = login;
+            this.roles = roles;
         }
+
         @Override
-        public Principal getUserPrincipal(){
-            return () -> login;
+        public Principal getUserPrincipal() {
+            return new User(login, roles);
         }
     }
 }
