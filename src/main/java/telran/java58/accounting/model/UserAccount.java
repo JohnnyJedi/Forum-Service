@@ -11,9 +11,10 @@ import java.util.Set;
 @Document(collection = "accounts")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"login"})
 @Builder
-public class Account {
+public class UserAccount {
     @Setter
     @Id
     private String login;
@@ -26,13 +27,6 @@ public class Account {
     @Singular
     private Set<Roles> roles = new HashSet<>();
 
-    public Account(String login, String firstName, String lastName, String password, Set<Roles> roles) {
-        this.login = login;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.roles = roles;
-    }
     public void addRole(Roles role) {
         roles.add(role);
     }
