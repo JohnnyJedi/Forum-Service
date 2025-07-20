@@ -23,7 +23,6 @@ public class AdminManagingRolesFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (checkEndPoint(request.getMethod(), request.getServletPath())) {
-            System.out.println("AdminManaging principal = " + request.getUserPrincipal());
             User user = (User)request.getUserPrincipal();
             if (!user.getRoles().contains(Roles.ADMINISTRATOR.name())) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

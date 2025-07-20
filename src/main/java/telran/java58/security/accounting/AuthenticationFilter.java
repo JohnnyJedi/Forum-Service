@@ -41,16 +41,6 @@ public class AuthenticationFilter implements Filter {
                         .map(Roles::name)
                         .collect(Collectors.toSet());
                 request = new WrappedRequest(request, account.getLogin(),roles);
-                System.out.println("Auth principal = " + request.getUserPrincipal());
-
-
-//                String login = account.getLogin();
-//                request = new HttpServletRequestWrapper(request) {
-//                    @Override
-//                    public Principal getUserPrincipal() {
-//                        return () -> "login";
-//                    }
-//                };
             } catch (Exception e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;

@@ -15,7 +15,7 @@ import telran.java58.security.model.User;
 import java.io.IOException;
 
 @Component
-@Order(50)
+@Order(40)
 @RequiredArgsConstructor
 public class UpdatePostFilter implements Filter {
     private final ForumRepository forumRepository;
@@ -29,8 +29,7 @@ public class UpdatePostFilter implements Filter {
             String[] parts = request.getServletPath().split("/");
             String postId = parts[parts.length - 1];
             Post post = forumRepository.findById(postId).orElse(null);
-            if (post == null ||
-                    !(user.getName().equalsIgnoreCase(post.getAuthor()) || user.getRoles().contains(Roles.MODERATOR.name()))) {
+            if (post == null || !(user.getName().equalsIgnoreCase(post.getAuthor()))) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }

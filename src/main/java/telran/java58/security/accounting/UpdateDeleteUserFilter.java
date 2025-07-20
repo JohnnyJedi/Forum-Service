@@ -24,7 +24,8 @@ public class UpdateDeleteUserFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         if (isUpdate(request.getMethod(), request.getServletPath())) {
-            String userForUpdate = request.getServletPath().split("/")[3];
+            String[] parts = request.getServletPath().split("/");
+            String userForUpdate = parts[parts.length - 1];
             User user = (User) request.getUserPrincipal();
             if (!userForUpdate.equalsIgnoreCase(user.getName())) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);

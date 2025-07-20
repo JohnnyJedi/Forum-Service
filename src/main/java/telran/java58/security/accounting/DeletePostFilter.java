@@ -29,7 +29,7 @@ public class DeletePostFilter implements Filter {
             String[] parts = request.getServletPath().split("/");
             String postId = parts[parts.length - 1];
             Post post = forumRepository.findById(postId).orElse(null);
-            if (post == null || !(user.getName().equalsIgnoreCase(post.getAuthor()))) {
+            if (post == null || !(user.getName().equalsIgnoreCase(post.getAuthor())|| user.getRoles().contains(Roles.MODERATOR.name()))) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
