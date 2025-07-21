@@ -35,11 +35,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.DELETE, "/forum/post/{id}")
                         .access((authentication, context) -> {
                             boolean isAuthor = webSecurity.isPostAuthor(authentication.get().getName(), context.getVariables().get("id"));
-// boolean isModerator = authentication.get().getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("MODERATOR"));
+                            // boolean isModerator = authentication.get().getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("MODERATOR"));
                             boolean isModerator = context.getRequest().isUserInRole(Roles.MODERATOR.name());
                             return new AuthorizationDecision(isAuthor || isModerator);
                         })
-
                         .anyRequest().authenticated()
         );
         return http.build();

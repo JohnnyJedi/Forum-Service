@@ -9,6 +9,7 @@ import telran.java58.forum.dto.PostDto;
 import telran.java58.forum.dto.exceptions.NotFoundException;
 import telran.java58.forum.model.Comment;
 import telran.java58.forum.model.Post;
+import telran.java58.forum.service.logging.PostLogger;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,7 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
+    @PostLogger
     public void addLike(String id) {
         Post post = repository.findById(id).orElseThrow(NotFoundException::new);
         post.addLike();
@@ -78,6 +80,7 @@ public class ForumServiceImpl implements ForumService {
     }
 
     @Override
+    @PostLogger
     public PostDto updatePost(String id, PostAddUpdateDto postAddUpdateDto) {
         Post post = repository.findById(id).orElseThrow(NotFoundException::new);
         if (postAddUpdateDto.getTitle() != null) {
