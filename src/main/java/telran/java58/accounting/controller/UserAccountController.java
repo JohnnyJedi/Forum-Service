@@ -1,5 +1,7 @@
 package telran.java58.accounting.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ public class UserAccountController {
 
 
     @PostMapping("/register")
-    public UserDto registerUser(@RequestBody UserRegisterDto userRegisterDto) {
+    public UserDto registerUser(@RequestBody @Valid UserRegisterDto userRegisterDto) {
         return userAccountService.registerUser(userRegisterDto);
     }
 
@@ -31,7 +33,7 @@ public class UserAccountController {
     }
 
     @PatchMapping("/user/{user}")
-    public UserDto updateUser(@RequestBody UserUpdateDto userUpdateDto, @PathVariable String user) {
+    public UserDto updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto, @PathVariable String user) {
         return userAccountService.updateUser(userUpdateDto, user);
     }
 
@@ -47,8 +49,10 @@ public class UserAccountController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/password")
-    public void changePassword(Principal principal,@RequestHeader("X-Password") String newPassword) {
-        userAccountService.changePassword(principal.getName(), newPassword);    }
+    public void changePassword(Principal principal, @RequestHeader("X-Password") @Size(min = 4, max = 20, message = "password must be between 4 and 20 characters")
+    String newPassword) {
+        userAccountService.changePassword(principal.getName(), newPassword);
+    }
 
     @GetMapping("/user/{user}")
     public UserDto getUserByLogin(@PathVariable("user") String username) {

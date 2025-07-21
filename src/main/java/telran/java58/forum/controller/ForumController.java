@@ -1,5 +1,6 @@
 package telran.java58.forum.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ForumController {
 
     @PostMapping("/forum/post/{user}")
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDto addPost(@PathVariable("user") String author, @RequestBody PostAddUpdateDto post) {
+    public PostDto addPost(@PathVariable("user") String author, @RequestBody @Valid PostAddUpdateDto post) {
         return forumService.addPost(author, post);
     }
 
@@ -41,7 +42,7 @@ public class ForumController {
     }
 
     @PatchMapping("/forum/post/{postId}/comment/{commenter}")
-    public PostDto addComment(@PathVariable("postId") String id, @PathVariable String commenter, @RequestBody CommentRequestDto comment) {
+    public PostDto addComment(@PathVariable("postId") String id, @PathVariable String commenter, @RequestBody @Valid CommentRequestDto comment) {
         return forumService.addComment(id, commenter, comment.getMessage());
     }
 
