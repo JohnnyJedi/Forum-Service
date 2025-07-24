@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class PostAddUpdateDto {
     @NotBlank(message = "title is required")
-    @Size(min = 3, max = 255, message = "login must be between 3 and 255 characters")
+    @Size(min = 3, max = 255, message = "title must be between 3 and 255 characters")
     private String title;
     @NotBlank(message = "content is required")
     @Size(min = 10, message = "content should be at least 10 symbols")

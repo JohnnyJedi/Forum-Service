@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateDto {
-    @Size(min = 3, max = 20, message = "login must be between 3 and 20 characters")
+    @Size(min = 2, max = 20, message = "login must be between 2 and 20 characters")
     private String firstName;
-    @Size(min = 3, max = 20, message = "login must be between 3 and 20 characters")
+    @Size(min = 2, max = 20, message = "login must be between 2 and 20 characters")
     private String lastName;
 }

@@ -19,7 +19,7 @@ public class ForumServiceLogger {
     public void annotatePostLogger() {
     }
 
-    @Pointcut("execution(public Iterable<telran.java58.forum.dto.PostDto> telran.java58.forum.service.ForumServiceImpl.findPostsByAuthor(..))")
+    @Pointcut("execution(public java.util.List telran.java58.forum.service.ForumServiceImpl.findPostsByAuthor(..))")
     public void bulkFindPostsLogger() {
     }
 
