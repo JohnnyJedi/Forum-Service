@@ -89,7 +89,7 @@ public class ForumServiceImpl implements ForumService {
         if (postAddUpdateDto.getContent() != null) {
             post.setContent(postAddUpdateDto.getContent());
         }
-        if (!postAddUpdateDto.getTags().isEmpty()) {
+        if (postAddUpdateDto.getTags() != null) {
             post.addTags(postAddUpdateDto.getTags());
         }
         repository.save(post);

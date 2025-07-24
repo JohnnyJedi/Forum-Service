@@ -19,7 +19,7 @@ public class ForumServiceLogger {
     public void annotatePostLogger() {
     }
 
-    @Pointcut("execution(public Iterable<telran.java58.forum.dto.PostDto> telran.java58.forum.service.ForumServiceImpl.findPostsByAuthor(..))")
+    @Pointcut("execution(public  java.util.List  telran.java58.forum.service.ForumServiceImpl.findPosts*(..))")
     public void bulkFindPostsLogger() {
     }
 
@@ -33,7 +33,7 @@ public class ForumServiceLogger {
         log.info("annotated by post logger method: {}, done", joinPoint.getSignature().getName());
     }
 
-    @Around(value = "bulkFindPostsLogger()")
+    @Around("bulkFindPostsLogger()")
     public Object logBulkFindPostsLogger(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         for (int i = 0; i < args.length; i++) {
@@ -44,9 +44,8 @@ public class ForumServiceLogger {
         long start = System.currentTimeMillis();
         Object result = joinPoint.proceed(args);
         long end = System.currentTimeMillis();
-        log.info("method {}, time: {} ms", joinPoint.getSignature().getName(), end - start);
+        log.info("method {}, time: {} ms", joinPoint.getSignature().getName() ,end - start);
         return result;
-
     }
 
 }

@@ -56,12 +56,12 @@ public class ForumController {
     }
 
     @GetMapping("/forum/posts/period")
-    public List<PostDto> findPostsByPeriod(@RequestParam LocalDate dateFrom,@RequestParam LocalDate dateTo) {
+    public List<PostDto> findPostsByPeriod(@RequestParam LocalDate dateFrom, @RequestParam LocalDate dateTo) {
         return forumService.findPostsByPeriod(dateFrom, dateTo);
     }
 
-@PatchMapping("/forum/post/{postId}")
-    public PostDto updatePost(@PathVariable("postId") String id,@RequestBody PostAddUpdateDto post) {
+    @PatchMapping("/forum/post/{postId}")
+    public PostDto updatePost(@PathVariable("postId") String id, @RequestBody PostAddUpdateDto post) {
         return forumService.updatePost(id, post);
     }
 }
