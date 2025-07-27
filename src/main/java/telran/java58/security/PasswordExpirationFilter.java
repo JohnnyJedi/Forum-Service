@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 import telran.java58.accounting.dao.UserAccountRepository;
 import telran.java58.accounting.model.UserAccount;
 
@@ -15,18 +16,17 @@ import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
-public class PasswordExpirationFilter implements Filter {
+public class PasswordExpirationFilter extends OncePerRequestFilter {
     private final UserAccountRepository repository;
+
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()){
             String login = authentication.getName();
             UserAccount user = repository.findById(login).orElse(null);
-            if(user != null && user.getPasswordExpirationDate().isBefore(LocalDateTime.now())){
-                response.sendRedirect("/account/password");
+            if(user != null && user.getPasswordExpirationDate().isBefore(LocalDateTime.now()) && !request.getRequestURI().equals("/account/password")){
+                response.sendError(HttpServletResponse.SC_FORBIDDEN,"Password expired");
                 return;
             }
         }
