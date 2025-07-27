@@ -47,6 +47,7 @@ public class ForumController {
 
     @DeleteMapping("/forum/post/{postId}")
     public PostDto deletePost(@PathVariable("postId") String id) {
+        System.out.println(">>> IN CONTROLLER deletePost " + id);
         return forumService.deletePost(id);
     }
 
